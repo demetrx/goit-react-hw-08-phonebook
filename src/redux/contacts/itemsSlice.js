@@ -9,16 +9,12 @@ const itemsSlice = createSlice({
     add: {
       reducer: (state, action) => {
         const contact = action.payload;
-        const isExisting = state.find(({ name }) => name === contact.name);
-
-        if (isExisting) {
-          console.log(contact.name + ' is already in contacts!');
-          return state;
-        }
-
         return [contact, ...state];
       },
-      prepare: contact => ({ payload: { ...contact, id: nanoid() } }),
+      prepare: contact => ({
+        payload: { ...contact, id: nanoid() },
+        meta: { add: true },
+      }),
     },
     remove: (state, action) => state.filter(i => i.id !== action.payload),
   },
