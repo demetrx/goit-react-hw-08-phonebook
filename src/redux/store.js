@@ -1,4 +1,4 @@
-import { configureStore, combineReducers, useSelector } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { filterReducer } from './contacts/filterSlice';
 import { itemsReducer } from './contacts/itemsSlice';
 import {
