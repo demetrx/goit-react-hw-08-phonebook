@@ -1,4 +1,4 @@
-import { useFilter } from 'redux/contacts/filterSlice';
+import { useFilter } from 'redux/filterSlice';
 import { Label } from './Filter.styled';
 
 const Filter = () => {

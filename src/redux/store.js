@@ -1,60 +1,19 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { filterReducer } from './contacts/filterSlice';
-import { itemsReducer } from './contacts/itemsSlice';
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-
-const contactsReducer = combineReducers({
-  items: itemsReducer,
-  filter: filterReducer,
-});
-
-const persistConfig = {
-  key: 'contacts',
-  storage,
-  whitelist: ['contacts'],
-};
-
-const alertMd = store => next => action => {
-  if (action.meta?.add) {
-    const contact = action.payload;
-    const items = store.getState().contacts.items;
-
-    const isExisting = items.find(({ name }) => name === contact.name);
-
-    if (isExisting) {
-      alert(contact.name + ' is already in contacts!');
-      return;
-    }
-  }
-
-  next(action);
-};
-
-const rootReducer = combineReducers({ contacts: contactsReducer });
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+import { setupListeners } from '@reduxjs/toolkit/dist/query/react';
+import { configureStore } from '@reduxjs/toolkit';
+import { contactsApi } from './contactsSlice';
+import { filterReducer } from './filterSlice';
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: {
+    filter: filterReducer,
+    [contactsApi.reducerPath]: contactsApi.reducer,
+  },
   middleware: getDefaultMiddleware => [
-    ...getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
-    alertMd,
+    ...getDefaultMiddleware(),
+    contactsApi.middleware,
   ],
 });
 
-const persistor = persistStore(store);
+setupListeners(store.dispatch);
 
-export { store, persistor };
+export default store;

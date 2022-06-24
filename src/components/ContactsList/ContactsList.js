@@ -1,28 +1,22 @@
-import { ItemWrap } from './ContactsList.styled';
-import { useItems } from 'redux/contacts/itemsSlice';
-import { useFilter } from 'redux/contacts/filterSlice';
+import ContactsItem from 'components/ContactsItem/ContactsItem';
+import Loader from 'components/UI/Loader/Loader';
+import useContactsList from './useContactsList';
 
 const ContactsList = () => {
-  const { contacts, handleRemoveContact } = useItems();
-  const { filter } = useFilter();
+  const { isLoading, isFetching, error, filteredContacts } = useContactsList();
 
-  const contactsToShow = contacts.filter(({ name }) =>
-    name.toLowerCase().includes(filter)
-  );
+  if (isLoading) return <p>Wait a second...</p>;
+  if (error) return <p>Couldn`t fetch data, retry later.</p>;
 
   return (
-    <ul>
-      {contactsToShow.map(({ id, name, number }) => (
-        <li key={id}>
-          <ItemWrap>
-            {name}: {number}
-            <button type="button" onClick={() => handleRemoveContact(id)}>
-              Delete
-            </button>
-          </ItemWrap>
-        </li>
-      ))}
-    </ul>
+    <>
+      {isFetching && <Loader />}
+      <ul>
+        {filteredContacts.map(({ id, name, phone }) => (
+          <ContactsItem key={id} id={id} name={name} phone={phone} />
+        ))}
+      </ul>
+    </>
   );
 };
 

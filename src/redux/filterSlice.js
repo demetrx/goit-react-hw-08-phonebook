@@ -14,7 +14,7 @@ const { change, reset } = filterSlice.actions;
 const filterReducer = filterSlice.reducer;
 
 const useFilter = () => {
-  const filter = useSelector(state => state.contacts.filter);
+  const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
 
   const handleFilterChange = value => dispatch(change(value));
