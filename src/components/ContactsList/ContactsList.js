@@ -1,6 +1,6 @@
 import ContactsItem from 'components/ContactsItem/ContactsItem';
 import Loader from 'components/UI/Loader/Loader';
-import useContactsList from './useContactsList';
+import useContactsList from '../../hooks/useContactsList';
 
 const ContactsList = () => {
   const { isLoading, isFetching, error, filteredContacts } = useContactsList();
@@ -12,8 +12,8 @@ const ContactsList = () => {
     <>
       {isFetching && <Loader />}
       <ul>
-        {filteredContacts.map(({ id, name, phone }) => (
-          <ContactsItem key={id} id={id} name={name} phone={phone} />
+        {filteredContacts.map(({ id, name, number }) => (
+          <ContactsItem key={id} id={id} name={name} number={number} />
         ))}
       </ul>
     </>

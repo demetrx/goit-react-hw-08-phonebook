@@ -1,13 +1,13 @@
-import { useRemoveContactMutation } from 'redux/contactsSlice';
+import { useRemoveContactMutation } from 'services/contacts-api';
 import { ItemWrap, Btn } from './ContactsItem.styled';
 
-const ContactsItem = ({ id, name, phone }) => {
+const ContactsItem = ({ id, name, number }) => {
   const [deleteContact, { isLoading, isSuccess }] = useRemoveContactMutation();
 
   return (
     <li key={id}>
       <ItemWrap>
-        {name}: {phone}
+        {name}: {number}
         <Btn
           type="button"
           disabled={isLoading || isSuccess}
