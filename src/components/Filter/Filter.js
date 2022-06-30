@@ -1,13 +1,13 @@
 import { useFilter } from 'redux/filterSlice';
-import { Label } from './Filter.styled';
+import { Label, FilterInput } from './Filter.styled';
 
 const Filter = () => {
   const { filter, handleFilterChange } = useFilter();
 
   return (
     <div>
-      <Label htmlFor="filter">Find contacts by name</Label>
-      <input
+      <Label htmlFor="filter">Find a contact by name:</Label>
+      <FilterInput
         type="text"
         id="filter"
         value={filter}

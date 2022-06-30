@@ -1,77 +1,39 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useSignupMutation } from 'services/contacts-api';
+import { Title, AuthLink, Auth } from './SignUpView.styled';
+import useCustomForm from 'hooks/useCustomForm';
+import Box from 'components/UI/Box';
+import toast from 'react-hot-toast';
 
 const SignUpView = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [signup, { isLoading, isError }] = useSignupMutation();
+  const { handleSubmit, Field, Submit, Form } = useCustomForm({
+    name: '',
+    email: '',
+    password: '',
+  });
 
-  const [signup] = useSignupMutation();
+  useEffect(() => {
+    isError && toast.error('Sign up failed. Please, try again!');
+  }, [isError]);
 
-  const handleFieldChange = e => {
-    const { name, value } = e.target;
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-
-      default:
-        throw new Error(name + 'field is not supported!');
-    }
-  };
-
-  const resetForm = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-  };
-
-  const handleSignUp = e => {
-    e.preventDefault();
-    signup({ name, email, password });
-    resetForm();
+  const handleSignUp = data => {
+    signup(data);
   };
 
   return (
-    <>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSignUp}>
-        <label>
-          <p>Name</p>
-          <input
-            onChange={handleFieldChange}
-            name="name"
-            type="text"
-            value={name}
-          />
-        </label>
-        <label>
-          <p>E-mail</p>
-          <input
-            onChange={handleFieldChange}
-            name="email"
-            type="text"
-            value={email}
-          />
-        </label>
-        <label>
-          <p>Password</p>
-          <input
-            onChange={handleFieldChange}
-            name="password"
-            type="text"
-            value={password}
-          />
-        </label>
-        <button>Sign Up</button>
-      </form>
-    </>
+    <Auth>
+      <Title>Sign Up</Title>
+      <Form onSubmit={handleSubmit(handleSignUp)}>
+        <Field ac label="Name" />
+        <Field ac label="E-mail" type="email" />
+        <Field ac label="Password" type="password" />
+        <Submit label="Sign Up" isLoading={isLoading} />
+      </Form>
+      <Box mt={4} as="p">
+        Have an account already? <AuthLink to="/login">Log In</AuthLink>.
+      </Box>
+    </Auth>
   );
 };
 

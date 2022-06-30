@@ -1,9 +1,9 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
 export const LoaderStyled = styled.div`
   position: fixed;
   right: 7vw;
-  top: 8vh;
+  top: 15vh;
   display: inline-block;
   width: 20px;
   height: 20px;

@@ -1,18 +1,17 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import { ContainerStyled } from 'components/UI/Container/Container.styled';
 
 export const Header = styled.header`
   display: flex;
-  box-sizing: border-box;
   align-items: center;
-  min-height: 80px;
-  padding: 15px 0;
-  box-shadow: 0px 6px 5px -2px rgb(158, 158, 158);
+  padding: ${p => p.theme.space[4]}px 0;
+  background-color: ${p => p.theme.colors.primary};
+  border-bottom: ${p => p.theme.borders.thick} ${p => p.theme.colors.secondary};
+  color: ${p => p.theme.colors.white};
 `;
 
 export const HeaderContainer = styled(ContainerStyled)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100%;
 `;

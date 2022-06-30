@@ -60,8 +60,14 @@ export const api = createApi({
       query: id => ({ url: `/contacts/${id}`, method: 'DELETE' }),
       invalidatesTags: (_, __, id) => [{ type: 'Contacts', id }],
     }),
+    editContact: build.mutation({
+      query: ({ id, ...body }) => {
+        return { url: `/contacts/${id}`, method: 'PATCH', body };
+      },
+      invalidatesTags: [{ type: 'Contacts', id: 'LIST' }],
+    }),
   }),
-  // ----- Too many requests, `cause devTools trigger refocus
+  // ----- Too many requests: devTools trigger refocus
   // refetchOnFocus: true,
   // refetchOnReconnect: true,
 });
@@ -74,4 +80,5 @@ export const {
   useGetContactsQuery,
   useAddContactMutation,
   useRemoveContactMutation,
+  useEditContactMutation,
 } = api;

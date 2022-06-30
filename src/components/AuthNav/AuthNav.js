@@ -1,11 +1,12 @@
-import { AuthNavLink } from './AuthNav.styled';
+import NavLink from '../UI/NavLink/NavLink';
+import Box from 'components/UI/Box';
 
 const AuthNav = () => {
   return (
-    <nav>
-      <AuthNavLink to="/signup">Sign Up</AuthNavLink>
-      <AuthNavLink to="/login">Log In</AuthNavLink>
-    </nav>
+    <Box as="nav" display="flex" gap={5}>
+      <NavLink to="/signup">Sign Up</NavLink>
+      <NavLink to="/login">Log In</NavLink>
+    </Box>
   );
 };
 

@@ -1,63 +1,37 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useLoginMutation } from 'services/contacts-api';
+import { Title, AuthLink, Auth } from '../SignUpView/SignUpView.styled';
+import useCustomForm from 'hooks/useCustomForm';
+import Box from 'components/UI/Box';
+import toast from 'react-hot-toast';
 
 const SignUpView = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [login, { isLoading, isError }] = useLoginMutation();
+  const { handleSubmit, Field, Submit, Form } = useCustomForm({
+    email: '',
+    password: '',
+  });
 
-  const [login, { isLoading }] = useLoginMutation();
+  useEffect(() => {
+    isError && toast.error('Login failed. Please, try again!');
+  }, [isError]);
 
-  const handleFieldChange = e => {
-    const { name, value } = e.target;
-    switch (name) {
-      case 'email':
-        setEmail(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-
-      default:
-        throw new Error(name + 'field is not supported!');
-    }
-  };
-
-  const resetForm = () => {
-    setEmail('');
-    setPassword('');
-  };
-
-  const handleSignUp = e => {
-    e.preventDefault();
-    login({ email, password });
-    resetForm();
+  const handleLogIn = data => {
+    login(data);
   };
 
   return (
-    <>
-      <h1>Login</h1>
-      <form onSubmit={handleSignUp}>
-        <label>
-          <p>E-mail</p>
-          <input
-            onChange={handleFieldChange}
-            name="email"
-            type="text"
-            value={email}
-          />
-        </label>
-        <label>
-          <p>Password</p>
-          <input
-            onChange={handleFieldChange}
-            name="password"
-            type="text"
-            value={password}
-          />
-        </label>
-        <button>Log In</button>
-      </form>
-    </>
+    <Auth>
+      <Title>Log In</Title>
+      <Form onSubmit={handleSubmit(handleLogIn)}>
+        <Field label="E-mail" ac type="email" />
+        <Field label="Password" ac type="password" />
+        <Submit label="Log In" isLoading={isLoading} />
+      </Form>
+      <Box mt={4} as="p">
+        Don`t have an account yet? <AuthLink to="/signup">Sign up</AuthLink>.
+      </Box>
+    </Auth>
   );
 };
 

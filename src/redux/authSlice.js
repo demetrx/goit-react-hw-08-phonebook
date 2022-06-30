@@ -42,4 +42,6 @@ export default authSlice.reducer;
 export const authSelectors = {
   getIsLoggedIn: state => state.auth.isLoggedIn,
   getUserName: state => state.auth.user.name,
+  getUserMail: state => state.auth.user.email,
+  getToken: state => state.auth.token,
 };

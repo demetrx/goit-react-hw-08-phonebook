@@ -1,83 +1,62 @@
-import { useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import { useFilter } from 'redux/filterSlice';
+import useCustomForm from 'hooks/useCustomForm';
 import {
   useAddContactMutation,
   useGetContactsQuery,
 } from 'services/contacts-api';
-import { useFilter } from 'redux/filterSlice';
-import { Form, Input } from './ContactsForm.styled';
 
 const ContactsForm = () => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-
+  const { reset, handleSubmit, Field, Submit, Form } = useCustomForm({
+    name: '',
+    number: '',
+  });
   const { handleFilterReset } = useFilter();
 
   const [addContact, { isLoading }] = useAddContactMutation();
   const { data: contacts } = useGetContactsQuery();
 
-  const handleFieldChange = e => {
-    const { name, value } = e.target;
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'number':
-        setNumber(value);
-        break;
-      default:
-        throw new Error(name + 'field is not supported!');
-    }
-  };
-
-  const handleAddContant = e => {
-    e.preventDefault();
-
-    if (contacts.find(c => c.name === name)) {
-      toast.error(name + ' is already in contacts!');
+  const handleAddContant = data => {
+    if (contacts.find(({ name }) => name === data.name)) {
+      toast.error(data.name + ' is already in contacts!');
       return;
     }
 
-    addContact({ name, number }).then(result =>
+    addContact(data).then(result =>
       !result.error
-        ? toast.success('Contact added successfully')
+        ? toast.success(data.name + ' added to phonebook successfully')
         : toast.error('Failed to add contact, retry later!')
     );
 
+    reset();
     handleFilterReset();
-    setName('');
-    setNumber('');
   };
 
   return (
     <>
-      <Toaster />
-      <Form onSubmit={handleAddContant}>
-        <label htmlFor="name">Name</label>
-        <Input
-          type="text"
-          name="name"
-          id="name"
-          value={name}
-          onChange={handleFieldChange}
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
+      <Form onSubmit={handleSubmit(handleAddContant)} width="260px">
+        <Field
+          ac
+          label="Name"
+          placeholder="John However"
+          pattern={{
+            value: /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
+            message: 'May contain only letters, apostrophe, dash and spaces',
+          }}
         />
-        <label htmlFor="number">Number</label>
-        <Input
+        <Field
+          ac
           type="tel"
-          name="number"
-          id="number"
-          value={number}
-          onChange={handleFieldChange}
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
+          label="Number"
+          placeholder="+38(0XX)XXX-XX-XX"
+          pattern={{
+            value:
+              /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
+            message:
+              'This must be digits and may contain spaces, dashes, parentheses or start with +.',
+          }}
         />
-        <button type="submit" disabled={isLoading}>
-          Add Contact
-        </button>
+        <Submit label="Add Contact" isLoading={isLoading} />
       </Form>
     </>
   );
